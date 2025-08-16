@@ -1,30 +1,205 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div class="app">
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="nav-links">
+        <a href="#" class="nav-link active">Home</a>
+        <a href="#" class="nav-link">Dispositivos</a>
+        <a href="#" class="nav-link">Relatórios</a>
+        <a href="#" class="nav-link">Configurações</a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Header Section -->
+      <div class="header-section">
+        <div class="logo-container">
+          <svg class="lightning-logo" viewBox="0 0 24 24" fill="none">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#ffd43b" stroke="#ffd43b" stroke-width="1"/>
+          </svg>
+          <h1 class="main-title">Global Sonic Challenge</h1>
+        </div>
+        <p class="main-subtitle">
+          Cadastro e monitoramento de dispositivos em tempo real
+        </p>
+      </div>
+
+      <!-- Form Card -->
+      <div class="form-card">
+        <DeviceForm @created="addDevice" />
+      </div>
+
+      <!-- Table Card -->
+      <div class="table-card">
+        <DeviceTable :devices="devices" @statusChanged="updateDeviceStatus" />
+      </div>
+    </div>
+
+    <p v-if="error" class="error">{{ error }}</p>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
+<script setup lang="ts">
+import { ref } from 'vue'
+import DeviceForm from './components/DeviceForm.vue'
+import DeviceTable from './components/DeviceTable.vue'
+
+const devices = ref([
+  {
+    id: '01',
+    name: 'Nome',
+    mac: '10:04:AC',
+    status: 'ATIVO'
+  },
+  {
+    id: '02',
+    name: 'Nome',
+    mac: '10:0C:20',
+    status: 'INATIVO'
+  },
+  {
+    id: '03',
+    name: 'Nome',
+    mac: '10:0220',
+    status: 'INATIVO'
+  }
+])
+
+const error = ref('')
+
+function addDevice(device: any) {
+  const nextId = String(devices.value.length + 1).padStart(2, '0')
+  device.id = nextId
+  device.status = 'ATIVO'
+  devices.value.push(device)
+}
+
+function updateDeviceStatus({ id, status }: { id: string; status: string }) {
+  const d = devices.value.find(dev => dev.id === id)
+  if (d) d.status = status
+}
+</script>
+
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.app {
+  min-height: 100vh;
+  background: #2c3e50;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+/* Navigation Bar */
+.navbar {
+  background: #34495e;
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+.nav-links {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.nav-link {
+  color: #bdc3c7;
+  text-decoration: none;
+  padding: 1rem 1.5rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: #ffffff;
+}
+
+/* Main Content */
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Header Section */
+.header-section {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.lightning-logo {
+  width: 48px;
+  height: 48px;
+}
+
+.main-title {
+  color: #ffffff;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.main-subtitle {
+  color: #bdc3c7;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+/* Form Card */
+.form-card {
+  background: #ecf0f1;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Table Card */
+.table-card {
+  background: #ecf0f1;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.error {
+  color: #e74c3c;
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: 1rem;
+  }
+  
+  .nav-links {
+    padding: 0 1rem;
+  }
+  
+  .nav-link {
+    padding: 1rem 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .main-title {
+    font-size: 2rem;
+  }
+  
+  .logo-container {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
 }
 </style>

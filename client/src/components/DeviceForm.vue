@@ -16,7 +16,7 @@
       class="form-input"
       placeholder="Endereço MAC"
     />
-    <div style="text-align: center; margin-top: 18px">
+    <div style="text-align: center">
       <button type="submit" :disabled="loading" class="form-btn">
         Cadastrar
       </button>
@@ -61,21 +61,18 @@ export default defineComponent({
 .device-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
 }
 
 .form-label {
   color: #2c3e50;
   font-weight: 600;
   font-size: 1rem;
-  margin-bottom: 0.5rem;
 }
 
 .form-input {
   background: #ffffff;
   border: 1px solid #bdc3c7;
   border-radius: 6px;
-  padding: 0.75rem;
   font-size: 1rem;
   color: #2c3e50;
   width: 100%;

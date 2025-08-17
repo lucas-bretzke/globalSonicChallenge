@@ -60,7 +60,7 @@ const error = ref('')
 
 onMounted(async () => {
   try {
-    devices.value = await fetchDevices()
+    devices.value = (await fetchDevices()).data
   } catch (e: any) {
     error.value = 'Erro ao buscar dispositivos.'
   }
@@ -68,8 +68,8 @@ onMounted(async () => {
 
 async function addDevice(device: any) {
   try {
-    const newDevice = await createDevice(device)
-    devices.value.push(newDevice)
+    await createDevice(device)
+    devices.value = (await fetchDevices()).data // Atualiza a lista com dados do banco
   } catch (e: any) {
     error.value = e?.response?.data?.erro || 'Erro ao criar dispositivo.'
   }

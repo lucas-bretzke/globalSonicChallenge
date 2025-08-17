@@ -4,7 +4,7 @@ let socket: Socket | null = null
 
 export function useSocket() {
   if (!socket) {
-    socket = io()
+    socket = io('http://localhost:3000')
   }
   return socket
 }

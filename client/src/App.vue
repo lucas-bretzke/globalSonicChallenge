@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import DeviceForm from './components/DeviceForm.vue'
 import DeviceTable from './components/DeviceTable.vue'
 import {
@@ -54,22 +54,40 @@ import {
   createDevice,
   updateDeviceStatus as apiUpdateDeviceStatus
 } from './utils/api'
+import { useSocket } from './utils/socket'
 
 const devices = ref<any[]>([])
 const error = ref('')
+const socket = useSocket()
 
-onMounted(async () => {
+async function loadDevices() {
   try {
     devices.value = (await fetchDevices()).data
   } catch (e: any) {
     error.value = 'Erro ao buscar dispositivos.'
   }
+}
+
+onMounted(() => {
+  loadDevices()
+  // Escuta eventos do backend
+  socket.on('deviceCreated', () => {
+    loadDevices()
+  })
+  socket.on('deviceUpdated', () => {
+    loadDevices()
+  })
+})
+
+onUnmounted(() => {
+  socket.off('deviceCreated')
+  socket.off('deviceUpdated')
 })
 
 async function addDevice(device: any) {
   try {
     await createDevice(device)
-    devices.value = (await fetchDevices()).data // Atualiza a lista com dados do banco
+    // Não precisa atualizar manualmente, pois o evento será recebido
   } catch (e: any) {
     error.value = e?.response?.data?.erro || 'Erro ao criar dispositivo.'
   }
@@ -83,9 +101,8 @@ async function updateDeviceStatus({
   status: string
 }) {
   try {
-    const updated = await apiUpdateDeviceStatus(id, status)
-    const idx = devices.value.findIndex(dev => dev.id === id)
-    if (idx !== -1) devices.value[idx].status = updated.status
+    await apiUpdateDeviceStatus(id, status)
+    // Não precisa atualizar manualmente, pois o evento será recebido
   } catch (e: any) {
     error.value = e?.response?.data?.erro || 'Erro ao atualizar status.'
   }

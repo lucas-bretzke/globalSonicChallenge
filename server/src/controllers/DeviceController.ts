@@ -17,6 +17,8 @@ export class DeviceController {
           .status(500)
           .json({ success: false, message: 'Socket.io instance not found' })
       const device = await DeviceService.createDevice(parsed.data, io)
+      // Emitir evento para todos os clientes
+      io.emit('deviceCreated', device)
       res.status(201).json({ success: true, data: device })
     } catch (err) {
       next(err)
@@ -43,6 +45,8 @@ export class DeviceController {
           .status(500)
           .json({ success: false, message: 'Socket.io instance not found' })
       const device = await DeviceService.toggleStatus(id, io)
+      // Emitir evento para todos os clientes
+      io.emit('deviceUpdated', device)
       res.json({ success: true, data: device })
     } catch (err) {
       next(err)

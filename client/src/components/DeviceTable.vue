@@ -10,27 +10,37 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="device in devices" :key="device.id">
-        <td>{{ device.id }}</td>
-        <td>{{ device.name }}</td>
-        <td>{{ device.mac }}</td>
-        <td>
-          <span
-            :class="['status', device.status === 'ATIVO' ? 'ativo' : 'inativo']"
-          >
-            {{ device.status }}
-          </span>
-        </td>
-        <td>
-          <button
-            class="action-btn"
-            :disabled="loadingId === device.id"
-            @click="toggleStatus(device)"
-          >
-            Alternar Status
-          </button>
+      <tr v-if="!Array.isArray(devices) || devices.length === 0">
+        <td colspan="5" style="text-align: center">
+          Nenhum dispositivo conectado
         </td>
       </tr>
+      <template v-else>
+        <tr v-for="device in devices" :key="device.id">
+          <td>{{ device.id }}</td>
+          <td>{{ device.name }}</td>
+          <td>{{ device.mac }}</td>
+          <td>
+            <span
+              :class="[
+                'status',
+                device.status === 'ATIVO' ? 'ativo' : 'inativo'
+              ]"
+            >
+              {{ device.status }}
+            </span>
+          </td>
+          <td>
+            <button
+              class="action-btn"
+              :disabled="loadingId === device.id"
+              @click="toggleStatus(device)"
+            >
+              Alternar Status
+            </button>
+          </td>
+        </tr>
+      </template>
     </tbody>
   </table>
 </template>
@@ -125,12 +135,12 @@ function toggleStatus(device: any) {
   .device-table {
     font-size: 0.875rem;
   }
-  
+
   .device-table th,
   .device-table td {
     padding: 0.75rem 0.5rem;
   }
-  
+
   .action-btn {
     padding: 0.375rem 0.75rem;
     font-size: 0.8rem;

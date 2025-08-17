@@ -16,7 +16,12 @@
       <div class="header-section">
         <div class="logo-container">
           <svg class="lightning-logo" viewBox="0 0 24 24" fill="none">
-            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#ffd43b" stroke="#ffd43b" stroke-width="1"/>
+            <path
+              d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
+              fill="#ffd43b"
+              stroke="#ffd43b"
+              stroke-width="1"
+            />
           </svg>
           <h1 class="main-title">Global Sonic Challenge</h1>
         </div>
@@ -41,43 +46,49 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import DeviceForm from './components/DeviceForm.vue'
 import DeviceTable from './components/DeviceTable.vue'
+import {
+  fetchDevices,
+  createDevice,
+  updateDeviceStatus as apiUpdateDeviceStatus
+} from './utils/api'
 
-const devices = ref([
-  {
-    id: '01',
-    name: 'Nome',
-    mac: '10:04:AC',
-    status: 'ATIVO'
-  },
-  {
-    id: '02',
-    name: 'Nome',
-    mac: '10:0C:20',
-    status: 'INATIVO'
-  },
-  {
-    id: '03',
-    name: 'Nome',
-    mac: '10:0220',
-    status: 'INATIVO'
-  }
-])
-
+const devices = ref<any[]>([])
 const error = ref('')
 
-function addDevice(device: any) {
-  const nextId = String(devices.value.length + 1).padStart(2, '0')
-  device.id = nextId
-  device.status = 'ATIVO'
-  devices.value.push(device)
+onMounted(async () => {
+  try {
+    devices.value = await fetchDevices()
+  } catch (e: any) {
+    error.value = 'Erro ao buscar dispositivos.'
+  }
+})
+
+async function addDevice(device: any) {
+  try {
+    const newDevice = await createDevice(device)
+    devices.value.push(newDevice)
+  } catch (e: any) {
+    error.value = e?.response?.data?.erro || 'Erro ao criar dispositivo.'
+  }
 }
 
-function updateDeviceStatus({ id, status }: { id: string; status: string }) {
-  const d = devices.value.find(dev => dev.id === id)
-  if (d) d.status = status
+async function updateDeviceStatus({
+  id,
+  status
+}: {
+  id: number
+  status: string
+}) {
+  try {
+    const updated = await apiUpdateDeviceStatus(id, status)
+    const idx = devices.value.findIndex(dev => dev.id === id)
+    if (idx !== -1) devices.value[idx].status = updated.status
+  } catch (e: any) {
+    error.value = e?.response?.data?.erro || 'Erro ao atualizar status.'
+  }
 }
 </script>
 
@@ -183,20 +194,20 @@ function updateDeviceStatus({ id, status }: { id: string; status: string }) {
   .main-content {
     padding: 1rem;
   }
-  
+
   .nav-links {
     padding: 0 1rem;
   }
-  
+
   .nav-link {
     padding: 1rem 0.75rem;
     font-size: 0.9rem;
   }
-  
+
   .main-title {
     font-size: 2rem;
   }
-  
+
   .logo-container {
     flex-direction: column;
     gap: 0.5rem;

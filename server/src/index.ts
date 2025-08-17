@@ -1,14 +1,31 @@
-import express, { Request, Response } from 'express'
+import express from 'express'
+import http from 'http'
+import { Server as SocketIOServer } from 'socket.io'
+import dotenv from 'dotenv'
+import { json } from 'express'
+import deviceRoutes from './routes/deviceRoutes'
+import { errorHandler } from './middlewares/errorHandler'
+
+dotenv.config()
 
 const app = express()
+const server = http.createServer(app)
+const io = new SocketIOServer(server, {
+  cors: { origin: '*' }
+})
+
+app.use(json())
+app.use((req, res, next) => {
+  req['io'] = io
+  next()
+})
+
+app.use('/api/devices', deviceRoutes)
+app.use(errorHandler)
+
 const PORT = process.env.PORT || 3000
-
-app.use(express.json())
-
-app.get('/', (req: Request, res: Response) => {
-  res.send('🚀 Servidor rodando com Express + TypeScript!')
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
 })
 
-app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`)
-})
+export { io }

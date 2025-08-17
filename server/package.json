@@ -1,23 +1,26 @@
 {
-  "name": "server",
+  "name": "global-sonic-challenge-server",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "prisma": "prisma"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2",
+    "prisma": "^5.10.2",
+    "@prisma/client": "^5.10.2",
+    "zod": "^3.22.4",
+    "dotenv": "^16.4.5"
   },
   "devDependencies": {
-    "@types/express": "^5.0.3",
-    "@types/node": "^24.3.0",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.4.5",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.30",
+    "@types/socket.io": "^3.0.2"
   }
 }

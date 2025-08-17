@@ -2,6 +2,7 @@ import express from 'express'
 import http from 'http'
 import { Server as SocketIOServer } from 'socket.io'
 import dotenv from 'dotenv'
+import cors from 'cors'
 import { json } from 'express'
 import deviceRoutes from './routes/deviceRoutes'
 import { errorHandler } from './middlewares/errorHandler'
@@ -13,6 +14,13 @@ const server = http.createServer(app)
 const io = new SocketIOServer(server, {
   cors: { origin: '*' }
 })
+app.use(
+  cors({
+    origin: 'http://localhost:5173', // libera só seu front
+    methods: ['GET', 'POST', 'PATCH'], // libera os métodos que você usa
+    allowedHeaders: ['Content-Type']
+  })
+)
 
 app.use(json())
 app.use((req, res, next) => {

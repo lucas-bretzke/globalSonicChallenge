@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = '/api/devices'
+const API_URL = 'http://localhost:3000/api/devices'
 
 export async function fetchDevices() {
   const { data } = await axios.get(API_URL)

@@ -33,8 +33,9 @@
       <!-- Form Card -->
       <div class="form-card">
         <DeviceForm @created="addDevice" />
+        <p v-if="error" class="error">{{ error }}</p>
       </div>
-
+      
       <!-- Table Card -->
       <div class="table-card">
         <div class="device-count">
@@ -73,8 +74,6 @@
         </div>
       </div>
     </div>
-
-    <p v-if="error" class="error">{{ error }}</p>
   </div>
 </template>
 
@@ -169,6 +168,13 @@ onUnmounted(() => {
 })
 
 async function addDevice(device: any) {
+  const nomeExiste = devices.value.some(
+    d => d.name.trim().toLowerCase() === device.name.trim().toLowerCase()
+  )
+  if (nomeExiste) {
+    error.value = 'Já existe um dispositivo cadastrado com esse nome.'
+    return
+  }
   try {
     await createDevice(device)
     // Não precisa atualizar manualmente, pois o evento será recebido
@@ -229,6 +235,7 @@ async function updateDeviceStatus({
 /* Main Content */
 .main-content {
   max-width: 1200px;
+  border: 1px solid red;
   margin: 0 auto;
   padding: 2rem;
 }
@@ -271,7 +278,7 @@ async function updateDeviceStatus({
   border-radius: 12px;
   padding: 2rem;
   margin-bottom: 2rem;
-  max-width: 600px;
+  max-width: 500px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -281,6 +288,9 @@ async function updateDeviceStatus({
   background: #ecf0f1;
   border-radius: 12px;
   padding: 1.5rem;
+  border: 1px solid red;
+  width: auto;
+  max-width: 1100px;
   margin-bottom: 2rem;
 }
 
@@ -339,7 +349,7 @@ async function updateDeviceStatus({
 }
 /* Filtros de pesquisa */
 .device-count {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #2c3e50;
   margin-bottom: 0.5rem;
 }

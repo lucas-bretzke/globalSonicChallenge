@@ -37,6 +37,26 @@
 
       <!-- Table Card -->
       <div class="table-card">
+        <div class="device-count">
+          Dispositivos conectados: <strong>{{ devices.length }}</strong>
+        </div>
+        <div class="filters">
+          <input
+            v-model="searchName"
+            class="filter-input"
+            placeholder="Pesquisar por nome"
+          />
+          <input
+            v-model="searchMac"
+            class="filter-input"
+            placeholder="Pesquisar por MAC"
+          />
+          <select v-model="searchStatus" class="filter-select">
+            <option value="">Todos</option>
+            <option value="ATIVO">Ativo</option>
+            <option value="INATIVO">Inativo</option>
+          </select>
+        </div>
         <DeviceTable
           :devices="pagedDevices"
           @statusChanged="updateDeviceStatus"
@@ -59,7 +79,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import DeviceForm from './components/DeviceForm.vue'
 import DeviceTable from './components/DeviceTable.vue'
 import {
@@ -83,19 +103,41 @@ const error = ref('')
 const socket = useSocket()
 const page = ref(1)
 const limit = ref(10)
+const searchName = ref('')
+const searchMac = ref('')
+const searchStatus = ref('')
+
+const filteredDevices = computed(() => {
+  return devices.value.filter(device => {
+    const nameMatch = device.name
+      .toLowerCase()
+      .includes(searchName.value.toLowerCase())
+    const macMatch = device.mac
+      .toLowerCase()
+      .includes(searchMac.value.toLowerCase())
+    const statusMatch = searchStatus.value
+      ? device.status === searchStatus.value
+      : true
+    return nameMatch && macMatch && statusMatch
+  })
+})
 
 const pagedDevices = computed(() => {
   const start = (page.value - 1) * limit.value
-  return devices.value.slice(start, start + limit.value)
+  return filteredDevices.value.slice(start, start + limit.value)
 })
 const totalPages = computed(() => {
-  return Math.max(1, Math.ceil(devices.value.length / limit.value))
+  return Math.max(1, Math.ceil(filteredDevices.value.length / limit.value))
 })
 
 function goToPage(p: number) {
   if (p < 1 || p > totalPages.value) return
   page.value = p
 }
+
+watch([searchName, searchMac, searchStatus], () => {
+  page.value = 1
+})
 
 async function loadDevices() {
   try {
@@ -294,5 +336,29 @@ async function updateDeviceStatus({
 .pagination button:disabled {
   background: #bdc3c7;
   cursor: not-allowed;
+}
+/* Filtros de pesquisa */
+.device-count {
+  font-size: 1.1rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+.filter-input {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: 1px solid #bdc3c7;
+  font-size: 1rem;
+}
+.filter-select {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: 1px solid #bdc3c7;
+  font-size: 1rem;
 }
 </style>

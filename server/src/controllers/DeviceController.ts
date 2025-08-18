@@ -11,7 +11,6 @@ export class DeviceController {
           .status(400)
           .json({ success: false, errors: parsed.error.errors })
       }
-      // Validação de duplicidade de nome e MAC
       const allDevices = await DeviceService.getDevices()
       const nomeExiste = allDevices.some(
         d =>
@@ -42,7 +41,6 @@ export class DeviceController {
           .status(500)
           .json({ success: false, message: 'Socket.io instance not found' })
       const device = await DeviceService.createDevice(parsed.data, io)
-      // Emitir evento para todos os clientes
       io.emit('deviceCreated', device)
       res.status(201).json({ success: true, data: device })
     } catch (err) {

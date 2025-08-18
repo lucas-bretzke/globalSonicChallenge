@@ -60,7 +60,6 @@ export default defineComponent({
     function handleSubmit() {
       loading.value = true
       error.value = ''
-      // Simulação de cadastro
       setTimeout(() => {
         if (!form.value.name || !form.value.mac) {
           error.value = 'Preencha todos os campos.'
@@ -90,7 +89,6 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   width: 450px;
-  /* border:1px solid red; */
   padding: 2rem 1.5rem;
   background: #f9f9fb;
   border-radius: 12px;

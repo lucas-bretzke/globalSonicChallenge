@@ -1,6 +1,5 @@
 <template>
   <div class="app">
-    <!-- Navigation Bar -->
     <nav class="navbar">
       <div class="navbar-content">
         <div class="logo-container">
@@ -23,16 +22,13 @@
       </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="main-content">
-      <!-- Header Section -->
       <div class="header-section">
         <p class="main-subtitle">
           Cadastro e monitoramento de dispositivos em tempo real
         </p>
       </div>
 
-      <!-- Modal DeviceForm -->
       <teleport to="body">
         <div
           v-if="showForm"
@@ -47,7 +43,6 @@
         </div>
       </teleport>
 
-      <!-- Table Card -->
       <div class="table-card">
         <div class="device-count">
           Dispositivos conectados: <strong>{{ filteredDevices.length }}</strong>
@@ -105,7 +100,6 @@ import {
 async function handleDeleteDevice(id: number) {
   try {
     await apiDeleteDevice(id)
-    // Não precisa atualizar manualmente, pois o evento será recebido via socket
   } catch (e: any) {
     error.value = e?.response?.data?.erro || 'Erro ao excluir dispositivo.'
   }
@@ -165,7 +159,6 @@ async function loadDevices() {
 
 onMounted(() => {
   loadDevices()
-  // Escuta eventos do backend
   socket.on('deviceCreated', () => {
     loadDevices()
   })
@@ -208,9 +201,8 @@ async function addDevice(device: any) {
   }
   try {
     await createDevice(device)
-    showForm.value = false // Fecha modal ao cadastrar com sucesso
+    showForm.value = false
     error.value = ''
-    // Não precisa atualizar manualmente, pois o evento será recebido
   } catch (e: any) {
     error.value = e?.response?.data?.erro || 'Erro ao criar dispositivo.'
   }
@@ -225,7 +217,6 @@ async function updateDeviceStatus({
 }) {
   try {
     await apiUpdateDeviceStatus(id, status)
-    // Não precisa atualizar manualmente, pois o evento será recebido
   } catch (e: any) {
     error.value = e?.response?.data?.erro || 'Erro ao atualizar status.'
   }
@@ -237,8 +228,6 @@ async function updateDeviceStatus({
   min-height: 100vh;
   background: #2c3e50;
 }
-
-/* Navigation Bar */
 
 .navbar {
   position: fixed;
@@ -274,7 +263,7 @@ async function updateDeviceStatus({
 .nav-link {
   color: #bdc3c7;
   text-decoration: none;
-  padding: .7rem 1.2rem;
+  padding: 0.7rem 1.2rem;
   font-weight: 500;
   font-size: 1rem;
   border-radius: 6px;
@@ -308,7 +297,6 @@ async function updateDeviceStatus({
   }
 }
 
-/* Main Content */
 .main-content {
   max-width: 1200px;
   margin: 0 auto;
@@ -316,7 +304,6 @@ async function updateDeviceStatus({
   padding-top: 80px;
 }
 
-/* Modal styles */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -364,9 +351,7 @@ async function updateDeviceStatus({
   color: #e74c3c;
 }
 
-/* Header Section */
 .header-section {
-  /* text-align: center; */
   margin: 2rem 0;
 }
 
@@ -436,14 +421,11 @@ async function updateDeviceStatus({
     font-size: 0.9rem;
   }
 
- 
-
   .logo-container {
     flex-direction: column;
     gap: 0.5rem;
   }
 }
-/* Paginação visual */
 .pagination {
   display: flex;
   justify-content: center;
@@ -466,7 +448,6 @@ async function updateDeviceStatus({
   background: #bdc3c7;
   cursor: not-allowed;
 }
-/* Filtros de pesquisa */
 .device-count {
   font-size: 1rem;
   color: #2c3e50;

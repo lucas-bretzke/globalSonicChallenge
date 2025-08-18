@@ -11,6 +11,31 @@ export class DeviceController {
           .status(400)
           .json({ success: false, errors: parsed.error.errors })
       }
+      // Validação de duplicidade de nome e MAC
+      const allDevices = await DeviceService.getDevices()
+      const nomeExiste = allDevices.some(
+        d =>
+          d.name.trim().toLowerCase() === parsed.data.name.trim().toLowerCase()
+      )
+      if (nomeExiste) {
+        return res
+          .status(400)
+          .json({
+            success: false,
+            erro: 'Já existe um dispositivo cadastrado com esse nome.'
+          })
+      }
+      const macExiste = allDevices.some(
+        d => d.mac.trim().toLowerCase() === parsed.data.mac.trim().toLowerCase()
+      )
+      if (macExiste) {
+        return res
+          .status(400)
+          .json({
+            success: false,
+            erro: 'Já existe um dispositivo cadastrado com esse endereço MAC.'
+          })
+      }
       const io = req['io']
       if (!io)
         return res

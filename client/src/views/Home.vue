@@ -197,6 +197,13 @@ async function addDevice(device: any) {
     error.value = 'Já existe um dispositivo cadastrado com esse nome.'
     return
   }
+  const macExiste = devices.value.some(
+    d => d.mac.trim().toLowerCase() === device.mac.trim().toLowerCase()
+  )
+  if (macExiste) {
+    error.value = 'Já existe um dispositivo cadastrado com esse endereço MAC.'
+    return
+  }
   try {
     await createDevice(device)
     showForm.value = false // Fecha modal ao cadastrar com sucesso

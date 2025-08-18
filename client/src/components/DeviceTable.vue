@@ -127,7 +127,7 @@ function handleDelete(device: any) {
 }
 
 .action-btn {
-  background: #3498db;
+  background: #0EC8CE;
   color: #ffffff;
   border: none;
   border-radius: 4px;
@@ -139,7 +139,7 @@ function handleDelete(device: any) {
 }
 
 .action-btn:hover {
-  background: #2980b9;
+  background: #08a3a8;
 }
 
 .action-btn:disabled {

@@ -272,7 +272,7 @@ async function updateDeviceStatus({
 .nav-link:hover,
 .nav-link.active {
   color: #ffffff;
-  background: #217dbb;
+  background: #b85c16;
 }
 
 @media (max-width: 768px) {

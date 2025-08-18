@@ -38,10 +38,19 @@
       <!-- Table Card -->
       <div class="table-card">
         <DeviceTable
-          :devices="devices"
+          :devices="pagedDevices"
           @statusChanged="updateDeviceStatus"
           @deleteDevice="handleDeleteDevice"
         />
+        <div v-if="totalPages > 1" class="pagination">
+          <button :disabled="page === 1" @click="goToPage(page - 1)">
+            Anterior
+          </button>
+          <span>Página {{ page }} de {{ totalPages }}</span>
+          <button :disabled="page === totalPages" @click="goToPage(page + 1)">
+            Próxima
+          </button>
+        </div>
       </div>
     </div>
 
@@ -50,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import DeviceForm from './components/DeviceForm.vue'
 import DeviceTable from './components/DeviceTable.vue'
 import {
@@ -72,10 +81,26 @@ import { useSocket } from './utils/socket'
 const devices = ref<any[]>([])
 const error = ref('')
 const socket = useSocket()
+const page = ref(1)
+const limit = ref(10)
+
+const pagedDevices = computed(() => {
+  const start = (page.value - 1) * limit.value
+  return devices.value.slice(start, start + limit.value)
+})
+const totalPages = computed(() => {
+  return Math.max(1, Math.ceil(devices.value.length / limit.value))
+})
+
+function goToPage(p: number) {
+  if (p < 1 || p > totalPages.value) return
+  page.value = p
+}
 
 async function loadDevices() {
   try {
     devices.value = (await fetchDevices()).data
+    if (page.value > totalPages.value) page.value = totalPages.value
   } catch (e: any) {
     error.value = 'Erro ao buscar dispositivos.'
   }
@@ -246,5 +271,28 @@ async function updateDeviceStatus({
     flex-direction: column;
     gap: 0.5rem;
   }
+}
+/* Paginação visual */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.pagination button {
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.pagination button:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
 }
 </style>

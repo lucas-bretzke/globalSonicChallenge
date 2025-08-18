@@ -266,7 +266,6 @@ async function updateDeviceStatus({
 /* Main Content */
 .main-content {
   max-width: 1200px;
-  border: 1px solid red;
   margin: 0 auto;
   padding: 2rem;
 }
@@ -367,7 +366,6 @@ async function updateDeviceStatus({
   background: #ecf0f1;
   border-radius: 12px;
   padding: 1.5rem;
-  border: 1px solid red;
   width: auto;
   max-width: 1100px;
   margin-bottom: 2rem;

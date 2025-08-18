@@ -38,7 +38,7 @@
       <!-- Table Card -->
       <div class="table-card">
         <div class="device-count">
-          Dispositivos conectados: <strong>{{ devices.length }}</strong>
+          Dispositivos conectados: <strong>{{ filteredDevices.length }}</strong>
         </div>
         <div class="filters">
           <input

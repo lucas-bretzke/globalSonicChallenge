@@ -38,6 +38,13 @@
             >
               Alternar Status
             </button>
+            <button
+              class="action-btn delete-btn"
+              style="margin-left: 0.5rem; background: #e74c3c"
+              @click="handleDelete(device)"
+            >
+              Excluir
+            </button>
           </td>
         </tr>
       </template>
@@ -48,14 +55,23 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 const props = defineProps<{ devices: any[] }>()
-const emit = defineEmits(['statusChanged'])
+const emit = defineEmits(['statusChanged', 'deleteDevice'])
 const loadingId = ref<number | null>(null)
+const deletingId = ref<number | null>(null)
 
 function toggleStatus(device: any) {
   loadingId.value = device.id
   const newStatus = device.status === 'ATIVO' ? 'INATIVO' : 'ATIVO'
   emit('statusChanged', { id: device.id, status: newStatus })
   loadingId.value = null
+}
+
+function handleDelete(device: any) {
+  if (confirm('Tem certeza que deseja excluir este dispositivo?')) {
+    deletingId.value = device.id
+    emit('deleteDevice', device.id)
+    deletingId.value = null
+  }
 }
 </script>
 

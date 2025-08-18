@@ -16,8 +16,8 @@ const io = new SocketIOServer(server, {
 })
 app.use(
   cors({
-    origin: 'http://localhost:5173', // libera só seu front
-    methods: ['GET', 'POST', 'PATCH'], // libera os métodos que você usa
+    origin: '*',
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type']
   })
 )

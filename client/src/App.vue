@@ -37,7 +37,11 @@
 
       <!-- Table Card -->
       <div class="table-card">
-        <DeviceTable :devices="devices" @statusChanged="updateDeviceStatus" />
+        <DeviceTable
+          :devices="devices"
+          @statusChanged="updateDeviceStatus"
+          @deleteDevice="handleDeleteDevice"
+        />
       </div>
     </div>
 
@@ -52,8 +56,17 @@ import DeviceTable from './components/DeviceTable.vue'
 import {
   fetchDevices,
   createDevice,
-  updateDeviceStatus as apiUpdateDeviceStatus
+  updateDeviceStatus as apiUpdateDeviceStatus,
+  deleteDevice as apiDeleteDevice
 } from './utils/api'
+async function handleDeleteDevice(id: number) {
+  try {
+    await apiDeleteDevice(id)
+    // Não precisa atualizar manualmente, pois o evento será recebido via socket
+  } catch (e: any) {
+    error.value = e?.response?.data?.erro || 'Erro ao excluir dispositivo.'
+  }
+}
 import { useSocket } from './utils/socket'
 
 const devices = ref<any[]>([])
@@ -77,11 +90,15 @@ onMounted(() => {
   socket.on('deviceUpdated', () => {
     loadDevices()
   })
+  socket.on('deviceDeleted', () => {
+    loadDevices()
+  })
 })
 
 onUnmounted(() => {
   socket.off('deviceCreated')
   socket.off('deviceUpdated')
+  socket.off('deviceDeleted')
 })
 
 async function addDevice(device: any) {

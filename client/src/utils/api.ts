@@ -16,3 +16,8 @@ export async function updateDeviceStatus(id: number, status: string) {
   const { data } = await axios.patch(`${API_URL}/${id}/status`, { status })
   return data
 }
+
+export async function deleteDevice(id: number) {
+  const { data } = await axios.delete(`${API_URL}/${id}`)
+  return data
+}

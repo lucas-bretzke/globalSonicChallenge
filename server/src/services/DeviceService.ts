@@ -21,4 +21,7 @@ export class DeviceService {
     io.emit('device:status', device)
     return device
   }
+  static async deleteDevice(id: number): Promise<boolean> {
+    return await DeviceRepository.deleteDevice(id)
+  }
 }

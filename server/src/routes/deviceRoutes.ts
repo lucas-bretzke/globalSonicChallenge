@@ -13,5 +13,6 @@ function asyncHandler(fn: any) {
 router.post('/', asyncHandler(DeviceController.createDevice))
 router.get('/', asyncHandler(DeviceController.getDevices))
 router.patch('/:id/status', asyncHandler(DeviceController.toggleStatus))
+router.delete('/:id', asyncHandler(DeviceController.deleteDevice))
 
 export default router

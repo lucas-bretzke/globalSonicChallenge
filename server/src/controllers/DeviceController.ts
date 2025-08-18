@@ -52,4 +52,25 @@ export class DeviceController {
       next(err)
     }
   }
+  static async deleteDevice(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = Number(req.params.id)
+      if (isNaN(id))
+        return res.status(400).json({ success: false, message: 'Invalid ID' })
+      const io = req['io']
+      if (!io)
+        return res
+          .status(500)
+          .json({ success: false, message: 'Socket.io instance not found' })
+      const deleted = await DeviceService.deleteDevice(id)
+      if (!deleted)
+        return res
+          .status(404)
+          .json({ success: false, message: 'Device not found' })
+      io.emit('deviceDeleted', { id })
+      res.json({ success: true, id })
+    } catch (err) {
+      next(err)
+    }
+  }
 }

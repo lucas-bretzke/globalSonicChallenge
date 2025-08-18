@@ -27,4 +27,11 @@ export class DeviceRepository {
       data: { status: newStatus }
     })
   }
+
+  static async deleteDevice(id: number): Promise<boolean> {
+    const device = await prisma.device.findUnique({ where: { id } })
+    if (!device) return false
+    await prisma.device.delete({ where: { id } })
+    return true
+  }
 }

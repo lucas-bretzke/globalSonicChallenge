@@ -3,14 +3,13 @@
     <nav class="navbar">
       <div class="navbar-content">
         <div class="logo-container">
-          <svg class="lightning-logo" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
-              fill="#ffd43b"
-              stroke="#ffd43b"
-              stroke-width="1"
-            />
-          </svg>
+          <img
+            src="../assets/globalSonicLogo.png"
+            alt=""
+            width="70"
+            height="60"
+            sryle="border-radius: 50%"
+          />
           <h1 class="main-title">Global Sonic Challenge</h1>
         </div>
         <div class="nav-links">

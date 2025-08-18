@@ -86,7 +86,7 @@ import {
   createDevice,
   updateDeviceStatus as apiUpdateDeviceStatus,
   deleteDevice as apiDeleteDevice
-} from './../utils/api'
+} from './../services/api'
 async function handleDeleteDevice(id: number) {
   try {
     await apiDeleteDevice(id)
@@ -95,7 +95,7 @@ async function handleDeleteDevice(id: number) {
     error.value = e?.response?.data?.erro || 'Erro ao excluir dispositivo.'
   }
 }
-import { useSocket } from '../utils/socket'
+import { useSocket } from '../services/socket'
 
 const devices = ref<any[]>([])
 const error = ref('')

@@ -2,18 +2,7 @@
   <div class="app">
     <!-- Navigation Bar -->
     <nav class="navbar">
-      <div class="nav-links">
-        <a href="#" class="nav-link active">Home</a>
-        <a href="#" class="nav-link">Dispositivos</a>
-        <a href="#" class="nav-link">Relatórios</a>
-        <a href="#" class="nav-link">Configurações</a>
-      </div>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="main-content">
-      <!-- Header Section -->
-      <div class="header-section">
+      <div class="navbar-content">
         <div class="logo-container">
           <svg class="lightning-logo" viewBox="0 0 24 24" fill="none">
             <path
@@ -25,6 +14,19 @@
           </svg>
           <h1 class="main-title">Global Sonic Challenge</h1>
         </div>
+        <div class="nav-links">
+          <a href="#" class="nav-link active">Home</a>
+          <a href="#" class="nav-link">Dispositivos</a>
+          <a href="#" class="nav-link">Relatórios</a>
+          <a href="#" class="nav-link">Configurações</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Header Section -->
+      <div class="header-section">
         <p class="main-subtitle">
           Cadastro e monitoramento de dispositivos em tempo real
         </p>
@@ -237,30 +239,73 @@ async function updateDeviceStatus({
 }
 
 /* Navigation Bar */
+
 .navbar {
+  position: fixed;
+  width: 100%;
   background: #34495e;
   padding: 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.navbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  height: 72px;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .nav-links {
   display: flex;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .nav-link {
   color: #bdc3c7;
   text-decoration: none;
-  padding: 1rem 1.5rem;
+  padding: .7rem 1.2rem;
   font-weight: 500;
-  transition: color 0.2s;
+  font-size: 1rem;
+  border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
 }
 
 .nav-link:hover,
 .nav-link.active {
   color: #ffffff;
+  background: #217dbb;
+}
+
+@media (max-width: 768px) {
+  .navbar-content {
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+    padding: 0 1rem;
+  }
+  .logo-container {
+    justify-content: center;
+    margin-bottom: 0.5rem;
+  }
+  .nav-links {
+    justify-content: center;
+    gap: 0.2rem;
+  }
+  .nav-link {
+    padding: 0.7rem 0.7rem;
+    font-size: 0.95rem;
+  }
 }
 
 /* Main Content */
@@ -268,6 +313,7 @@ async function updateDeviceStatus({
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+  padding-top: 80px;
 }
 
 /* Modal styles */
@@ -320,8 +366,8 @@ async function updateDeviceStatus({
 
 /* Header Section */
 .header-section {
-  text-align: center;
-  margin-bottom: 3rem;
+  /* text-align: center; */
+  margin: 2rem 0;
 }
 
 .logo-container {
@@ -329,19 +375,17 @@ async function updateDeviceStatus({
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  margin-bottom: 1rem;
 }
 
 .lightning-logo {
-  width: 48px;
-  height: 48px;
+  width: 38px;
+  height: 38px;
 }
 
 .main-title {
   color: #ffffff;
-  font-size: 2.5rem;
-  font-weight: 700;
   margin: 0;
+  font-size: 20px;
 }
 
 .main-subtitle {
@@ -392,9 +436,7 @@ async function updateDeviceStatus({
     font-size: 0.9rem;
   }
 
-  .main-title {
-    font-size: 2rem;
-  }
+ 
 
   .logo-container {
     flex-direction: column;

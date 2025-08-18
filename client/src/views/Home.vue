@@ -30,11 +30,20 @@
         </p>
       </div>
 
-      <!-- Form Card -->
-      <div class="form-card">
-        <DeviceForm @created="addDevice" />
-        <p v-if="error" class="error">{{ error }}</p>
-      </div>
+      <!-- Modal DeviceForm -->
+      <teleport to="body">
+        <div
+          v-if="showForm"
+          class="modal-overlay"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div class="modal-content">
+            <DeviceForm @created="addDevice" :onClose="closeForm" />
+            <p v-if="error" class="error">{{ error }}</p>
+          </div>
+        </div>
+      </teleport>
 
       <!-- Table Card -->
       <div class="table-card">
@@ -57,6 +66,10 @@
             <option value="ATIVO">Ativo</option>
             <option value="INATIVO">Inativo</option>
           </select>
+
+          <button class="add-device-btn" @click="openForm">
+            Adicionar dispositivo
+          </button>
         </div>
         <DeviceTable
           :devices="pagedDevices"
@@ -99,6 +112,7 @@ import { useSocket } from '../services/socket'
 
 const devices = ref<any[]>([])
 const error = ref('')
+const showForm = ref(false)
 const socket = useSocket()
 const page = ref(1)
 const limit = ref(10)
@@ -167,6 +181,14 @@ onUnmounted(() => {
   socket.off('deviceDeleted')
 })
 
+function openForm() {
+  error.value = ''
+  showForm.value = true
+}
+function closeForm() {
+  showForm.value = false
+  error.value = ''
+}
 async function addDevice(device: any) {
   const nomeExiste = devices.value.some(
     d => d.name.trim().toLowerCase() === device.name.trim().toLowerCase()
@@ -177,6 +199,8 @@ async function addDevice(device: any) {
   }
   try {
     await createDevice(device)
+    showForm.value = false // Fecha modal ao cadastrar com sucesso
+    error.value = ''
     // Não precisa atualizar manualmente, pois o evento será recebido
   } catch (e: any) {
     error.value = e?.response?.data?.erro || 'Erro ao criar dispositivo.'
@@ -240,6 +264,54 @@ async function updateDeviceStatus({
   padding: 2rem;
 }
 
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(44, 62, 80, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  overflow-y: auto;
+}
+.modal-content {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18);
+  padding: 0;
+  position: relative;
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.modal-body {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #2c3e50;
+  cursor: pointer;
+  z-index: 10;
+  line-height: 1;
+  padding: 0.1rem 0.5rem;
+  transition: color 0.2s;
+}
+.close-btn:hover {
+  color: #e74c3c;
+}
+
 /* Header Section */
 .header-section {
   text-align: center;
@@ -297,8 +369,8 @@ async function updateDeviceStatus({
 .error {
   color: #e74c3c;
   text-align: center;
-  margin-top: 1rem;
-  font-size: 1.1rem;
+  margin-top: 0;
+  font-size: 1rem;
 }
 
 @media (max-width: 768px) {
@@ -370,5 +442,22 @@ async function updateDeviceStatus({
   border-radius: 4px;
   border: 1px solid #bdc3c7;
   font-size: 1rem;
+}
+
+.add-device-btn {
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 0.6rem 1.3rem;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+}
+.add-device-btn:hover {
+  background: #217dbb;
+  box-shadow: 0 4px 12px rgba(44, 62, 80, 0.1);
 }
 </style>
